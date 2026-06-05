@@ -9,7 +9,7 @@
   <meta property="og:description" content="Find the best food prices near you. Community-sourced menu prices for local restaurants, chains, and food trucks.">
   <meta property="og:url" content="https://omaconcepts.com/phoodscout.html">
   <meta name="theme-color" content="#020617">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/PhoodScout.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -128,14 +128,15 @@
 
     .app-icon-wrap {
       width: 100px; height: 100px;
-      background: linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.05) 100%);
-      border: 1px solid var(--amber-border);
-      border-radius: 26px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 52px;
+      border-radius: 24px;
+      overflow: hidden;
       margin: 0 auto 36px;
-      box-shadow: 0 0 60px rgba(245,158,11,0.12);
+      box-shadow: 0 0 60px rgba(245,158,11,0.15), 0 0 0 1px rgba(255,255,255,0.08);
       animation: iconFloat 6s ease-in-out infinite;
+    }
+    .app-icon-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
     }
     @keyframes iconFloat {
       0%,100% { transform: translateY(0); }
@@ -325,7 +326,7 @@
   <main>
     <section class="hero" style="position:relative;">
       <div class="wrap" style="display:flex;flex-direction:column;align-items:center;">
-        <div class="app-icon-wrap">&#127829;</div>
+        <div class="app-icon-wrap"><img src="assets/PhoodScout.png" alt="PhoodScout"></div>
         <h1 class="app-wordmark"><span class="ph">Ph</span>oodScout</h1>
         <p class="app-tagline">Find the best food prices near you. Community-sourced menu prices for local restaurants, chains, and food trucks.</p>
 
