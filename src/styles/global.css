@@ -1,0 +1,65 @@
+/* Shared across every page — the subset of tokens/rules that were byte-identical
+   across all 5 source HTML files. Page-specific tokens (--radius, --amber-dim,
+   --amber-border, --indigo*) differ in value between pages in the original site,
+   so they stay in each layout/component's own scoped <style> block rather than
+   being forced into one conflicting :root here. */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #020617;
+  --surface:      rgba(255,255,255,0.04);
+  --surface-hover:rgba(255,255,255,0.07);
+  --border:       rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.16);
+  --text:         #f8fafc;
+  --muted:        #94a3b8;
+  --faint:        #475569;
+  --amber:        #f59e0b;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+/* Grain overlay — identical SVG data-URI on every page; opacity is the only
+   per-page variation (0.025 marketing pages, 0.02 legal pages), set via
+   --grain-opacity in the layout that needs to override it. */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: var(--grain-opacity, 0.025);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+/* Shared content container used by HeaderMain, HeaderApps, Footer (non-standalone),
+   and most page templates. Defined globally (not per-component scoped styles)
+   because Header/Footer are separate components from the pages that use them —
+   a page-scoped .wrap rule never reaches a .wrap div rendered inside a different
+   component. Pages needing a different max-width (e.g. detail pages at 1000px)
+   override this locally; their own scoped selector has higher specificity. */
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (max-width: 480px) {
+  .wrap { padding: 0 16px; }
+}

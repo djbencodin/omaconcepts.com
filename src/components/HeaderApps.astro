@@ -1,0 +1,45 @@
+---
+// Sticky, translucent-from-load header — apps.html's original behavior.
+---
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <a href="/" class="logo">OMA <span>Concepts</span></a>
+      <nav>
+        <a href="/apps.html" class="active">Apps</a>
+        <a href="/#about">About</a>
+        <a href="mailto:hello@omaconcepts.com">Contact</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(2,6,23,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; color: var(--text);
+    text-decoration: none; letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--amber); }
+  nav { display: flex; align-items: center; gap: 8px; }
+  nav a {
+    color: var(--muted); text-decoration: none;
+    font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+  }
+  nav a:hover { color: var(--text); background: var(--surface); }
+  nav a.active { color: var(--amber); }
+
+  @media (max-width: 600px) { nav a:not(:last-child) { display: none; } }
+</style>

@@ -1,0 +1,41 @@
+---
+// Minimal back-link topnav used on app detail pages (e.g. phoodscout.html original).
+interface Props { badgeLabel?: string }
+const { badgeLabel = 'Coming Soon' } = Astro.props;
+---
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="/" class="back-link">&#8592; OMA Concepts</a>
+    <span class="nav-badge">{badgeLabel}</span>
+  </div>
+</nav>
+
+<style>
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 24px;
+  }
+  .topnav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--muted); text-decoration: none;
+    font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--border-hover); }
+  .nav-badge {
+    background: rgba(245,158,11,0.10);
+    border: 1px solid rgba(245,158,11,0.22);
+    color: var(--amber);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 100px;
+  }
+</style>

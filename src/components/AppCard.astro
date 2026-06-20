@@ -1,0 +1,124 @@
+---
+interface Props {
+  name: string;
+  tagline: string;
+  description: string;
+  icon: string;
+  status: 'coming-soon' | 'in-development' | 'live';
+  platforms: string[];
+  clickable?: boolean;
+  href?: string;
+}
+const { name, tagline, description, icon, status, platforms, clickable = false, href = '#' } = Astro.props;
+
+const badgeLabel = status === 'live' ? 'Live' : 'Coming Soon';
+const badgeClass = clickable ? 'amber' : 'gray';
+const footerLabel = status === 'in-development' ? 'In development' : 'Coming soon';
+
+const Tag = clickable ? 'a' : 'div';
+---
+<Tag class={`app-card ${clickable ? 'clickable' : 'static'}`} {...(clickable ? { href } : {})}>
+  <div class="app-icon">
+    <img src={icon} alt={`${name} icon`} />
+  </div>
+  <div class={`status-badge ${badgeClass}`}><span class="status-dot"></span> {badgeLabel}</div>
+  <div class="app-name">{name}</div>
+  <div class="app-tagline">{tagline}</div>
+  <p class="app-desc">{description}</p>
+  <div class="card-footer">
+    <div class="card-platforms">
+      {platforms.map(p => <span class="platform-pill">{p}</span>)}
+    </div>
+    {clickable
+      ? <span class="learn-more">Learn more &#8594;</span>
+      : <span class="coming-soon-label">{footerLabel}</span>}
+  </div>
+</Tag>
+
+<style>
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px 32px;
+    display: flex; flex-direction: column;
+    gap: 0;
+    text-decoration: none; color: inherit;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .app-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .app-card.clickable:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .app-card.clickable:hover::after { opacity: 1; }
+  .app-card.static { cursor: default; }
+  .app-card.static::after { display: none; }
+
+  .app-icon {
+    width: 80px; height: 80px;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+  .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px; width: fit-content;
+  }
+  .status-badge.amber {
+    background: rgba(245,158,11,0.10);
+    border: 1px solid rgba(245,158,11,0.22);
+    color: var(--amber);
+  }
+  .status-badge.gray {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--faint);
+  }
+  .status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+  .app-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; letter-spacing: -0.3px;
+    margin-bottom: 8px; line-height: 1.1;
+  }
+  .app-tagline {
+    font-size: 14px; color: var(--amber);
+    font-style: italic; margin-bottom: 16px; line-height: 1.5;
+  }
+  .app-desc { font-size: 14px; color: var(--muted); line-height: 1.7; flex: 1; margin-bottom: 28px; }
+
+  .card-footer {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+    padding-top: 20px; border-top: 1px solid var(--border); margin-top: auto;
+  }
+  .card-platforms { display: flex; gap: 8px; }
+  .platform-pill {
+    font-size: 11px; font-weight: 600; color: var(--faint);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px; padding: 3px 9px;
+  }
+  .learn-more {
+    font-size: 13px; font-weight: 700; color: var(--amber);
+    display: flex; align-items: center; gap: 4px;
+    transition: gap 0.2s;
+  }
+  .app-card.clickable:hover .learn-more { gap: 8px; }
+  .coming-soon-label { font-size: 12px; color: var(--faint); font-weight: 500; }
+</style>

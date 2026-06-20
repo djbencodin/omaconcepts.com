@@ -1,0 +1,228 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderDetail from '../components/HeaderDetail.astro';
+import Footer from '../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const apps = await getCollection('apps', ({ data }) => data.hasDetailPage);
+  return apps.map(app => ({ params: { slug: app.id }, props: { app } }));
+}
+
+const { app } = Astro.props;
+const { Content } = await render(app);
+const badgeLabel = app.data.status === 'live' ? 'Live' : 'Coming Soon';
+const accentLen = app.data.wordmarkAccent;
+const accent = app.data.name.slice(0, accentLen);
+const rest = app.data.name.slice(accentLen);
+---
+<BaseLayout
+  title={`${app.data.name} — Coming Soon`}
+  description={app.data.description}
+  ogTitle={`${app.data.name} — Coming Soon`}
+  ogDescription={app.data.tagline}
+  ogUrl={`https://omaconcepts.com/${app.id}.html`}
+  favicon={app.data.icon}
+>
+  <div class="orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <HeaderDetail badgeLabel={badgeLabel} />
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="app-icon-wrap"><img src={app.data.icon} alt={app.data.name} /></div>
+        <h1 class="app-wordmark">{accentLen > 0 ? <><span class="accent">{accent}</span>{rest}</> : app.data.name}</h1>
+        <p class="app-tagline">{app.data.tagline}</p>
+
+        <div class="notify-wrap">
+          <a
+            href={`mailto:hello@omaconcepts.com?subject=${encodeURIComponent(app.data.name + ' Launch Notification')}&body=${encodeURIComponent('Hey, please notify me when ' + app.data.name + ' launches!')}`}
+            class="btn btn-amber"
+          >
+            Get Launch Notification &rarr;
+          </a>
+          <p class="notify-note">Opens your email. No spam, launch update only.</p>
+        </div>
+
+        <div class="store-badges">
+          <div class="store-badge"><span>&#63743;</span> App Store &mdash; Coming Soon</div>
+          <div class="store-badge"><span>&#9654;</span> Google Play &mdash; Coming Soon</div>
+        </div>
+      </div>
+      <div class="scroll-hint">
+        <span>Scroll</span>
+        <div class="chevron"></div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="wrap">
+        <Content />
+      </div>
+    </section>
+  </main>
+
+  <Footer
+    standalone
+    logoHref="/"
+    links={[
+      { href: '/terms.html', label: 'Terms of Service' },
+      { href: '/privacy.html', label: 'Privacy Policy' },
+      { href: 'mailto:hello@omaconcepts.com', label: 'Contact' },
+    ]}
+  />
+</BaseLayout>
+
+<style>
+  .wrap { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  .orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+  .orb-1 {
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(245,158,11,0.16) 0%, transparent 65%);
+    top: -300px; right: -200px;
+    animation: drift1 24s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%);
+    bottom: 0; left: -100px;
+    animation: drift2 30s ease-in-out infinite;
+  }
+  @keyframes drift1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-50px, 40px) scale(1.05); }
+  }
+  @keyframes drift2 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(40px,-30px); }
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 120px 0 60px;
+    position: relative;
+  }
+  .hero .wrap { display: flex; flex-direction: column; align-items: center; }
+
+  .app-icon-wrap {
+    width: 100px; height: 100px;
+    border-radius: 24px;
+    overflow: hidden;
+    margin: 0 auto 36px;
+    box-shadow: 0 0 60px rgba(245,158,11,0.15), 0 0 0 1px rgba(255,255,255,0.08);
+    animation: iconFloat 6s ease-in-out infinite;
+  }
+  .app-icon-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @keyframes iconFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .app-wordmark {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(52px, 9vw, 96px);
+    letter-spacing: -1.5px; line-height: 1; margin-bottom: 8px;
+  }
+  .app-wordmark .accent { color: var(--amber); }
+  .app-tagline {
+    font-size: clamp(16px, 2.5vw, 21px);
+    color: var(--muted); max-width: 520px;
+    margin: 20px auto 48px; line-height: 1.6;
+  }
+
+  .notify-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .notify-note { font-size: 12px; color: var(--faint); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 26px; border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; text-decoration: none; transition: all 0.2s; border: none;
+  }
+  .btn-amber { background: var(--amber); color: #000; }
+  .btn-amber:hover { background: #fbbf24; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(245,158,11,0.3); }
+
+  .store-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+  .store-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 20px;
+    color: var(--faint); font-size: 13px; font-weight: 500;
+    cursor: default; user-select: none;
+  }
+  .store-badge span { font-size: 20px; }
+
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--faint); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    animation: fadeInUp 1s ease 1.5s both;
+  }
+  .scroll-hint .chevron {
+    width: 20px; height: 20px;
+    border-right: 1px solid var(--faint); border-bottom: 1px solid var(--faint);
+    transform: rotate(45deg);
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: rotate(45deg) translateY(0); }
+    50% { transform: rotate(45deg) translateY(4px); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  .features { padding: 100px 0; position: relative; z-index: 1; }
+
+  @media (max-width: 768px) { .scroll-hint { display: none; } }
+  @media (max-width: 480px) { .notify-wrap a { width: 100%; justify-content: center; } }
+</style>
+
+<style is:global>
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 16px;
+  }
+  .features h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 4vw, 48px);
+    line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 56px; text-align: center;
+  }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; transition: border-color 0.25s;
+  }
+  .feature-card:hover { border-color: var(--border-hover); }
+  .feature-icon { font-size: 32px; margin-bottom: 16px; }
+  .feature-card h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 10px; }
+  .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  .platform-strip {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px; display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap; margin-top: 16px;
+  }
+  .platform-strip h3 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 8px; }
+  .platform-strip p { font-size: 15px; color: var(--muted); max-width: 400px; }
+  .platform-icons { display: flex; gap: 16px; }
+  .platform-icon {
+    width: 56px; height: 56px;
+    background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.22);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+
+  @media (max-width: 768px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .platform-strip { flex-direction: column; align-items: flex-start; }
+  }
+</style>

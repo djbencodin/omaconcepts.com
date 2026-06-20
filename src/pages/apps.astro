@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeaderApps from '../components/HeaderApps.astro';
+import Footer from '../components/Footer.astro';
+import AppCard from '../components/AppCard.astro';
+
+const apps = (await getCollection('apps')).sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout
+  title="Our Apps — OMA Concepts"
+  description="Apps built by OMA Concepts. PhoodScout, MiCarino, and TokkenMax — each solving a real problem for an overlooked audience."
+  ogTitle="Our Apps — OMA Concepts"
+  ogUrl="https://omaconcepts.com/apps.html"
+>
+  <div class="orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <HeaderApps />
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="eyebrow">App Portfolio</div>
+        <h1>Every app solves<br>a real problem.</h1>
+        <p class="hero-sub">We build for audiences that are underserved, overlooked, or just plain annoyed by the existing options. Three apps in development under the OMA Concepts umbrella.</p>
+      </div>
+    </section>
+
+    <section class="apps-section">
+      <div class="wrap">
+        <div class="apps-grid">
+          {apps.map(app => (
+            <AppCard
+              name={app.data.name}
+              tagline={app.data.tagline}
+              description={app.data.description}
+              icon={app.data.icon}
+              status={app.data.status}
+              platforms={app.data.platforms}
+              clickable={app.data.clickable}
+              href={app.data.hasDetailPage ? `/${app.id}.html` : undefined}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <hr class="divider">
+
+  <Footer
+    links={[
+      { href: '/', label: 'Home' },
+      { href: '/phoodscout.html', label: 'PhoodScout' },
+      { href: '/terms.html', label: 'Terms' },
+      { href: '/privacy.html', label: 'Privacy' },
+      { href: 'mailto:hello@omaconcepts.com', label: 'Contact' },
+    ]}
+  />
+</BaseLayout>
+
+<style>
+  .orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+  .orb-1 {
+    width: 650px; height: 650px;
+    background: radial-gradient(circle, rgba(245,158,11,0.10) 0%, transparent 70%);
+    top: -200px; right: -150px;
+    animation: drift1 24s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+    animation: drift2 30s ease-in-out infinite;
+  }
+  @keyframes drift1 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(-40px, 30px); }
+  }
+  @keyframes drift2 {
+    0%,100% { transform: translate(0,0); }
+    50% { transform: translate(40px,-30px); }
+  }
+
+  .hero { padding: 80px 0 60px; position: relative; z-index: 1; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.22);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 11px; font-weight: 700; color: var(--amber);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1.05; letter-spacing: -1px; margin-bottom: 20px;
+  }
+  .hero-sub { font-size: clamp(16px, 2vw, 19px); color: var(--muted); max-width: 520px; line-height: 1.65; }
+
+  .apps-section { padding: 20px 0 100px; position: relative; z-index: 1; }
+  .apps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  @media (max-width: 900px) { .apps-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .apps-grid { grid-template-columns: 1fr; } }
+</style>

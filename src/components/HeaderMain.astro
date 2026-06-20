@@ -1,0 +1,64 @@
+---
+// Fixed header that goes translucent on scroll — index.html's original behavior.
+---
+<header id="header">
+  <div class="wrap">
+    <div class="header-inner">
+      <a href="/" class="logo">OMA <span>Concepts</span></a>
+      <nav>
+        <a href="/apps.html">Apps</a>
+        <a href="/#about">About</a>
+        <a href="mailto:hello@omaconcepts.com">Contact</a>
+        <a href="/apps.html" class="nav-cta">Our Apps &rarr;</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  header.scrolled {
+    background: rgba(2,6,23,0.85);
+    backdrop-filter: blur(20px);
+    border-color: var(--border);
+  }
+  .header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--text);
+    text-decoration: none; letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--amber); }
+  nav { display: flex; align-items: center; gap: 8px; }
+  nav a {
+    color: var(--muted); text-decoration: none;
+    font-size: 14px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+  }
+  nav a:hover { color: var(--text); background: var(--surface); }
+  .nav-cta {
+    background: rgba(245,158,11,0.12) !important;
+    color: var(--amber) !important;
+    border: 1px solid rgba(245,158,11,0.2) !important;
+  }
+  .nav-cta:hover { background: rgba(245,158,11,0.18) !important; }
+
+  @media (max-width: 768px) { nav .nav-cta { display: none; } }
+  @media (max-width: 480px) { nav a:not(.nav-cta) { padding: 8px 10px; font-size: 13px; } }
+</style>
+
+<script>
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header?.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+</script>

@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
+  favicon?: string;
+  grainOpacity?: number;
+}
+const {
+  title,
+  description,
+  ogTitle = title,
+  ogDescription = description,
+  ogUrl,
+  favicon = '/favicon.svg',
+  grainOpacity = 0.025,
+} = Astro.props;
+
+const faviconType = favicon.endsWith('.png') ? 'image/png' : 'image/svg+xml';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={ogTitle} />
+  <meta property="og:description" content={ogDescription} />
+  {ogUrl && <meta property="og:url" content={ogUrl} />}
+  <meta name="theme-color" content="#020617" />
+  <link rel="icon" href={favicon} type={faviconType} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body style={`--grain-opacity:${grainOpacity}`}>
+  <slot />
+</body>
+</html>
